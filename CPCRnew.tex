@@ -463,7 +463,7 @@ and good scalability of routing.
 
 % no keywords
 \begin{IEEEkeywords}
-DTN routing , clustering-based routing, contact distribution , inter-contact time , delay tolerant networks
+clustering, contact distribution , inter-contact time ,delay tolerant networks
 \end{IEEEkeywords}
 
 
@@ -492,7 +492,7 @@ Clustering in DTNs is unique \cite{uHaHongyi-22,kernal2005survey}, because the n
 
 Contact characteristics among nodes \cite{nGaoCao-15,oWhitbeckConan-16,p20102413007279} have been used as one of key metrics for clustering in DTNs. A contact happens between two nodes when they appear in each other's communication range, which refers to a possible communication opportunity. Frequency and duration of historical contacts have been used as metrics to describe contact probability \cite{rLiHui-19,t20102413006168}, however they cannot provide very accurate estimation of the contact probability among nodes. Instead, the distribution of  \emph{inter-contact time} (ICT) has been shown to be powerful for describing contact characteristics \cite{rLiHui-19,qGroeneveltNain-18,s20104613388174}. ICT between two nodes directly affects the transmission delay between these two nodes, since a shorter ICT implies a greater opportunity to relay packet in a period of time.
 
-In this paper, we consider how to design an efficient clustering-based routing scheme for large-scale urban DTNs.  We first
+In this paper, we propose an clustering-based routing scheme for large-scale urban DTNs.  We first
 analyze a real-world urban vehicular tracing dataset, GPS traces from $12,096$ Beijing taxis in one week, to reveal the Inter-contact time distributions of mobile vehicles in a large city. Our study confirm that both the global ICT among all nodes and the individual ICTs between each nodal pair follow the exponential distributions.
 We demonstrate that the parameter estimation for ICTs of nodal pairs is more accuracy than the parameter fitting the global ICT distribution. Therefore, we design distributed clustering algorithm which groups nodes by the contact probability calculated from the ICT distribution for nodal pair in real-time, and propose a new clustering-based routing scheme based on this contact predication clustering.
 
@@ -610,32 +610,21 @@ Section \ref{Section3_characteristics} provides the theoretical basis of contact
 \section{Related Work}
 \label{Section2_relatedwork}
 
-
 In 2004, Jain et al. \cite{JainFall-771} first investigate the routing issues in DTNs, where messages are to be moved
-end-to-end across a connectivity graph that is time-varying.  They assume that the dynamics of DTNs is known in advance.
-Since then routing in DTNs has been heavily studied \cite{cao2013routing,ZXSW13-DTN-survey} over the last decade.
-The routing performance is influenced by topology partitioning in DTNs. Based on the routing topology, we can categorize
-existing routing methods into \emph{flat routing} or \emph{hierarchical routing}. There are other ways to classify DTN routing methods, for more detailed please refer to related surveys such as \cite{cao2013routing,ZXSW13-DTN-survey}.
+end-to-end across a graph that is time-varying and not full connected. Since then routing in DTNs has been heavily studied \cite{cao2013routing,ZXSW13-DTN-survey} over the last decade.
+Routing algorithms can be categorized into \emph{flat routing} or \emph{hierarchical routing} by the network topology.
+Flat routing methods employ only a single routing strategy globally, while all nodes play similar roles. For example,
+\emph{Epidemic Routing} \cite{VahdatBecker-779} is a simple flooding method with zero knowledge of the network topology.  Compared with some single-copy routing methods, such as \emph{Direct Delivery} \cite{BalasubramanianLevine-489}, \emph{Randomized Routing} (RR) \cite{LeightonMaggs-780},  Epidemic routing greatly improves delivery ratio but suffers from resource waste and even network congestion due to large data replication. In order to reduce the usage of resources, \emph{Spray and Wait} routing \cite{SpyropoulosPsounis-772} limits the amount of message copies in its spray phrase and lets node wait until contacted by the destination node in its wait phrase. But with such solutions, routing performance could still be poor in large-scale networks.
+Besides these flooding based schemes \cite{VahdatBecker-779,GrossglauserTse-777,SpyropoulosPsounis-778}, there is also a set of DTN routing methods based on the contact information, where a smarter relay node selection is made \cite{LindgrenDoria-782,BurgessGallagher-783}.
+For example, \emph{PRoPHET} is a probability-based method, where each node maintains the encounter history.
 
-Flat routing methods employ only a single routing strategy globally, while all nodes involved play similar roles. For example,
-\emph{Epidemic Routing} \cite{VahdatBecker-779} is a simple flooding method with zero knowledge of the network topology.  Compared with some single-copy routing methods, such as \emph{Direct Delivery} \cite{BalasubramanianLevine-489}, \emph{Randomized Routing} (RR) \cite{LeightonMaggs-780},  Epidemic routing greatly improves delivery ratio but suffers from resource waste and even network congestion due to large data replication. In order to reduce the waste of resources, \emph{Spray and Wait} routing \cite{SpyropoulosPsounis-772} limits the amount of message copies in its spray phrase and lets node wait until contacted by the destination node in its wait phrase. But with such solutions, routing performance could still be poor in large-scale networks.
-Besides these flooding based schemes \cite{VahdatBecker-779,GrossglauserTse-777,SpyropoulosPsounis-778},
-there is also a set of DTN routing methods based on the contact information, where a smarter relay node selection is made \cite{LindgrenDoria-782,BurgessGallagher-783}.
-For example, \emph{PRoPHET}  is a probability-based method, where each node maintains the encounter history 
+When the network scale increases and topology evolves, however, the scalability and performance of flat routing methods are limited.
+Under this condition, hierarchical routing organizes the networks in groups via clustering techniques. It has been shown that hierarchical routing can achieve good scalability in large-scale mobile networks. However, restricted by the dynamic topology and frequently interruptions, hierarchical routing in DTNs is still in its early stages. Liu and Wu \cite{lLiuWu-1103} design a hierarchical DTN routing algorithm based on a strict mobility model, where all nodes move according to strict repetitive patterns. Their method is only effective such a specific mobility model and could not adapt to other mobility pattern. Ahmed and Kanhere \cite{mAhmedKanhere-14} adopt encounter frequencies of public transport networks to classify nodes. Nodes only relay messages to neighboring nodes which are in the same cluster of the destination node. Then epidemic routing is used to propagate messages inside the cluster.
+These clustering-based hierarchical routing methods can improve the scalability, but the resource consumption of collecting and maintaining historical information remains high.
+ a hybrid DTN-MANET (HYMAD) routing was proposed by Whitbeck and Conan \cite{oWhitbeckConan-16} for dense and highly dynamic wireless networks.
+This method is decentralized and only makes use of topological information exchanges between the nodes, thus limit the storage and information exchange cost. However,  its intra-cluster routing using MANET method may be invalid. It can not suit for more complicated urban DTNs.
 
-However, with the node scale expanding, these methods cost more storage and computation resources to maintain the global historical information of contacts. Hence, the scalability and performance of flat routing methods are limited, when the network scale increases and topology evolves all the time. 
-
-Under this condition, hierarchical routing organizes the networks in groups via clustering techniques. It has been shown that hierarchical routing can achieve good scalability in large-scale mobile networks. However, restricted by the dynamic topology and frequently interruptions, hierarchical routing in DTNs is still in its early stages. Dang and Wu \cite{DangWu-784} propose a clustering based routing method based on online estimation of contact probabilities. Their clustering method can make sure that nodes within the same cluster have higher contact probability. Intra-cluster routing adopts directly delivery approach so that a node will not delivery packages until contacted by the destination node in the same cluster. For the intra-cluster routing, a relay mechanism similar with MaxProp is used.
-%%%% should compare your method with this one, since they are very similar!!!!
-Liu and Wu \cite{lLiuWu-1103} also design a hierarchical DTN routing algorithm based on a strict mobility model, where all nodes move according to strict repetitive patterns. Their method is only effective such a specific mobility model and could not adapt to other mobility pattern. Ahmed and Kanhere \cite{mAhmedKanhere-14} adopt encounter frequencies of public transport networks to classify nodes. Nodes only relay messages to neighboring nodes which are in the same cluster of the destination node. Then epidemic routing is used to propagate messages inside the cluster. These clustering-based hierarchical routing methods can improve the scalability, but
-the resource consumption of collecting and maintaining historical information remains high.
-Whitbeck and Conan \cite{oWhitbeckConan-16} also proposed a hybrid DTN-MANET routing
-(HYMAD) for dense and highly dynamic wireless networks. By periodically scanning of topology changes,
-HYMAD builds temporary disjoint groups of connected nodes as clusters. Then DTN approach is used between
-disjoint clusters while MANET routing is used within clusters. This method is decentralized and only makes use of topological information exchanges between the nodes, thus limit the storage and information exchange cost.
-However,  the update cycle of the topology is crucial. If the cycle is too short,  updating and maintaining the topology may be difficult. If the update cycle is too long, intra-cluster routing using MANET method may be invalid. Therefore, this method does not suitable for sparse DTNs.
-
-In summary, the key challenge of hierarchical routing is the clustering method, especially in large scale DTNs. Efficient clustering method can form stable clusters, in which nodes are similar with each other, so that corresponding intra- and inter-cluster routing algorithms can be designed easily. Overall, with stable clustering hierarchical routing can improve the scalability and efficiency of routing in large scale DTNs.
+In summary, the key challenge of hierarchical routing is the clustering method, especially in large scale DTNs. To adapt to the scenario of large scale urban DTNs and solve the routing problem, a cluster-based routing algorithm is proposed.
 
 \section{Characteristics of Large-scale Urban DTNs}
 \label{Section3_characteristics}
