@@ -484,9 +484,8 @@ DTN routing , clustering-based routing, contact distribution , inter-contact tim
 \section{Introduction}
 \label{INTRODUCTION}
 % no \IEEEPARstart
-Delay Tolerant Networks (DTNs) \cite{aFall-2,b20082411309161,cAhmedSalil-4,dSahaGanguly-5} is a branch of networks,
-where communication links only exist temporarily with a highly dynamic topology. One of such examples is vehicular network
-where vehicles communicate with each other in order to disseminate data using opportunistic contacts \cite{zaZhuLi-28,LW07-VANET,LZFW12-IJDSN,fBurgessGallagher-7,HuangLuo-550,6522582}. To communicate in such an challenging environments, numerous DTN routing methods have been proposed over the last decade.
+Delay Tolerant Networks (DTNs) \cite{aFall-2,cAhmedSalil-4} is a branch of networks,
+where communication links only exist temporarily with a highly dynamic topology. One of such examples is vehicular network where vehicles communicate with each other in order to disseminate data using opportunistic contacts. To communicate in such an challenging environments, numerous DTN routing methods have been proposed over the last decade.
 
 Traditional flat routing methods, such as \emph{Direct Delivery} (DD) \cite{eKleywegtNori-6} and \emph{Epidemic Routing} \cite{gVahdatBecker-8}, become not scalable to large-scale DTNs. Meanwhile, clustering-based approaches have long been considered as an effective approach to reduce network overhead and improve scalability in traditional mobile ad hoc networks \cite{hAgarwalMotwani-9,iLiuLiu-10,jWangMi-11,kWhitbeckConan-12} with relatively stable topology and more communication opportunity.
 Clustering in DTNs is unique \cite{uHaHongyi-22,kernal2005survey}, because the network topology is not always fully connected. As a result, it becomes much more challenging to acquire necessary information to formulate clusters and ensure their stability. When we consider an urban DTN, the nodal scale and mobility will further increase the cost of maintaining clusters.
@@ -621,13 +620,12 @@ existing routing methods into \emph{flat routing} or \emph{hierarchical routing}
 Flat routing methods employ only a single routing strategy globally, while all nodes involved play similar roles. For example,
 \emph{Epidemic Routing} \cite{VahdatBecker-779} is a simple flooding method with zero knowledge of the network topology.  Compared with some single-copy routing methods, such as \emph{Direct Delivery} \cite{BalasubramanianLevine-489}, \emph{Randomized Routing} (RR) \cite{LeightonMaggs-780},  Epidemic routing greatly improves delivery ratio but suffers from resource waste and even network congestion due to large data replication. In order to reduce the waste of resources, \emph{Spray and Wait} routing \cite{SpyropoulosPsounis-772} limits the amount of message copies in its spray phrase and lets node wait until contacted by the destination node in its wait phrase. But with such solutions, routing performance could still be poor in large-scale networks.
 Besides these flooding based schemes \cite{VahdatBecker-779,GrossglauserTse-777,SpyropoulosPsounis-778},
-there is also a set of DTN routing methods based on the contact information, where a smarter relay node selection is made.
-For example, \emph{PRoPHET} \cite{LindgrenDoria-782} is a probability-based method, where each node maintains the encounter history with other nodes, and the routing decision is made based on the encounter probability.
-Similarly, \emph{MaxProp} \cite{BurgessGallagher-783} records neighbor nodes and their contact times with the destination node so that a contact probability can be adopted as the rule to choose the next hop relay.
-By introducing knowledge oracles, this kind of routing methods can reduce resource consumption and improve delivery ratio as well.
-However, with the node scale expanding, these methods cost more storage and computation resources to maintain the global historical information of contacts. Hence, the scalability and performance of flat routing methods are limited, when the network scale increases and topology evolves all the time. In such scenario, flat routing method cannot ensure low delay and high delivery ratio, and the cost of requiring global knowledge sometime is too high to be efficient any more.
+there is also a set of DTN routing methods based on the contact information, where a smarter relay node selection is made \cite{LindgrenDoria-782,BurgessGallagher-783}.
+For example, \emph{PRoPHET}  is a probability-based method, where each node maintains the encounter history 
 
-Hierarchical routing organizes the networks in groups via clustering techniques. It has been shown that hierarchical routing can achieve good scalability in large-scale mobile networks. However, restricted by the dynamic topology and frequently interruptions, hierarchical routing in DTNs is still in its early stages. Dang and Wu \cite{DangWu-784} propose a clustering based routing method based on online estimation of contact probabilities. Their clustering method can make sure that nodes within the same cluster have higher contact probability. Intra-cluster routing adopts directly delivery approach so that a node will not delivery packages until contacted by the destination node in the same cluster. For the intra-cluster routing, a relay mechanism similar with MaxProp is used.
+However, with the node scale expanding, these methods cost more storage and computation resources to maintain the global historical information of contacts. Hence, the scalability and performance of flat routing methods are limited, when the network scale increases and topology evolves all the time. 
+
+Under this condition, hierarchical routing organizes the networks in groups via clustering techniques. It has been shown that hierarchical routing can achieve good scalability in large-scale mobile networks. However, restricted by the dynamic topology and frequently interruptions, hierarchical routing in DTNs is still in its early stages. Dang and Wu \cite{DangWu-784} propose a clustering based routing method based on online estimation of contact probabilities. Their clustering method can make sure that nodes within the same cluster have higher contact probability. Intra-cluster routing adopts directly delivery approach so that a node will not delivery packages until contacted by the destination node in the same cluster. For the intra-cluster routing, a relay mechanism similar with MaxProp is used.
 %%%% should compare your method with this one, since they are very similar!!!!
 Liu and Wu \cite{lLiuWu-1103} also design a hierarchical DTN routing algorithm based on a strict mobility model, where all nodes move according to strict repetitive patterns. Their method is only effective such a specific mobility model and could not adapt to other mobility pattern. Ahmed and Kanhere \cite{mAhmedKanhere-14} adopt encounter frequencies of public transport networks to classify nodes. Nodes only relay messages to neighboring nodes which are in the same cluster of the destination node. Then epidemic routing is used to propagate messages inside the cluster. These clustering-based hierarchical routing methods can improve the scalability, but
 the resource consumption of collecting and maintaining historical information remains high.
@@ -644,43 +642,24 @@ In summary, the key challenge of hierarchical routing is the clustering method, 
 
 In this section, we mainly focus on revealing the inherent characteristics of contacts and possible clustering methods in large-scale urban DTNs by analyzing a real-world trace data. We believe that these are essential properties which affect DTN routing design and verification.
 
-\begin{figure}
-\centering
-\includegraphics[width=3.5in]{figures_1/data_record.eps}\\
-\caption{Examples of records in the Beijing taxi trace dataset.}\label{figure_trace_example}
-\end{figure}
 
 \subsection{Trace Dataset: Beijing Taxi Traces}
 \label{Trace Data}
 
 To study urban DTNs, we use a real-world GPS dataset  which were generated by $12,096$ taxis in Beijing, China within one week (from June 13th to 19th, 2010). This dataset has been used by several key research and application programs of Intelligent Transportation Systems (ITS) in Beijing, China. The number of participated taxis ($12,096$ taxis) is $18\%$ of the total taxis in the city. Each taxi is equipped with a GPS device and upload its information (including location, speed, direction, et al. ) about every 60 seconds. There are around $1.22 \times 10^8$ records in total.
-Figure \ref{figure_trace_example} shows an example portion of traces from the dataset. For each row, the record includes a base station ID, company name, taxi ID ($id$), timestamp ($t$), current location ($l$, including both longitude and latitude), another location (out of $54$ fixed locations), speed, acceleration, status of the taxi, event, and height. Out of this information, we only use the taxi ID, timestamp, and current location, i.e., $(id,t,l)$,  to generate the contacts among taxis for the study within this paper.  Notice that GPS traces from taxis have been used recently for inferring human mobility \cite{Ganti:2013:IHM:2493432.2493466} and modelling city-scale traffics \cite{Aslam:2012:CTE:2426656.2426671}. Therefore, we believe that they are also suitable to characterize the contact patterns among vehicles in large-scale urban DTNs.
+For each row, the record includes a base station ID, company name, taxi ID ($id$), timestamp ($t$), current location ($l$, including both longitude and latitude), another location (out of $54$ fixed locations), speed, acceleration, status of the taxi, event, and height. Out of this information, we only use the taxi ID, timestamp, and current location, i.e., $(id,t,l)$,  to generate the contacts among taxis for the study within this paper.  Notice that GPS traces from taxis have been used recently for inferring human mobility \cite{Ganti:2013:IHM:2493432.2493466} and modelling city-scale traffics \cite{Aslam:2012:CTE:2426656.2426671}. Therefore, we believe that they are also suitable to characterize the contact patterns among vehicles in large-scale urban DTNs.
 
 \subsection{Contact Characteristics in Beijing Taxi Traces}
 \label{Contact Characteristics}
 
 The \emph{inter-contact time} (ICT) is the interval time between two continuous contacts for same nodal pair. ICT implies the contacts frequency of two nodes. Researchers have focused on the study of ICT characteristics for different mobility patterns in DTNs, and lead to numerous ICT distribution results of both theoretical and real-world mobility models. Most ICT distribution models are created as exponential distributions. According to \cite{qGroeneveltNain-18,vHuWang-23,yJiangLi-26} , the ICT between two mobile nodes generates exponential distributions where the exponential parameter is related to the motion characteristics. Simulations in \cite{qGroeneveltNain-18,z20102212975997} based on random waypoint and random direction mobility models confirm such claims.
-In the real-world mobility traces of vehicular networks \cite{zaZhuLi-28}, the ICT between two vehicles also follows an exponential distribution.
-
-\begin{figure}[!t]
-  \centering
-  \includegraphics[width=2.4in]{figures_1/CCDF.eps}\\
-  \caption{CCDF of ICT in Beijing's urban DTNs}\label{figure_label_CCDF}
-\end{figure}
-
-Figure \ref{figure_label_CCDF} plots the CCDF of ICT in one day (June 13th, 210, $86,400$ seconds in total) of Beijing taxi trace records. From the very beginning of the plotting period (until $10,000s$), the plot is almost a straight line with a negative slope on log-log scale. The tail of the distribution decreases rapidly after this range. Such a fact indicates that the ICT distribution in urban DTNs is an exponential nature. Only about $15\%$ of ICT last longer than $10,000s$ in the plot, which means that most of contacts in the network can reappear after a predictably short time. Similar conclusions have been found in another Shanghai taxi trace dataset studied by  \cite{zaZhuLi-28,zb20080311017302}. The contact probability between any two nodes based on the global ICT distribution is
+In the real-world mobility traces of vehicular networks \cite{zaZhuLi-28}, the ICT between two vehicles also follows an exponential distribution.Similar conclusions have been found in another Shanghai taxi trace dataset studied by  \cite{zaZhuLi-28,zb20080311017302}. The contact probability between any two nodes based on the global ICT distribution is
  \begin{equation}
     P(X>x)=e^{-\lambda t},
  \end{equation}
 where the exponential parameter $\lambda$ reflects the contact strength between nodes. A static $\lambda$ can be estimated for the whole network by fitting the global ICT distribution to the exponential function. This simple method can measure the contact strength intuitively and efficiently, and has been frequently used in many DTN routing methods.
 
-In our recent work \cite{vHuWang-23} , we also study the ICT distributions of individual nodal pairs and find that they follow exponential distributions too. Similar as \cite{vHuWang-23}, we have the following three basic assumptions on ICTs:
-\begin{enumerate}
-      \item  The probability that any two mobile nodes will make contact twice or more times in a small duration of time $\Delta t$ is small.
-      \item  The probability that two mobile nodes will accomplish one contact within $\Delta t$ is approximated as $\lambda \Delta t$.
-      \item  In the non-overlapping time durations, the contacts of any two mobile nodes are independent.
-    \end{enumerate}
-With these assumption, the ICT of a node pair $i$ and $j$ also follows the exponential distribution with exponential parameters $\lambda_{ij}$, according to:
+ Paper \cite{vHuWang-23} studied the ICT distributions of individual nodal pairs and find that they follow exponential distributions under three assumptions. The ICT of a node pair $i$ and $j$ also follows the exponential distribution with exponential parameters $\lambda_{ij}$, according to:
  \begin{equation}\label{equation_label_lambda}
         \lambda_{ij} = n_{ij}/\sum ICT_{ij},
  \end{equation}
@@ -696,7 +675,6 @@ where $n_{ij}$ refers to the number of contacts between nodes $i$ and $j$, and $
 \end{figure}
 
 By fitting the samples of ICTs for a particular nodal pair with Equation \ref{equation_label_lambda}, we can derive the exponential parameters $\lambda_{ij}$. The values of $\lambda_{ij}$ in Beijing taxi dataset varies significantly from $0.0005$ to $0.005$. Figure \ref{figure_label_ICT_Distribution} shows the exponential distributions fitting for four pairs of nodes.
-Clearly, the parameters for each nodal pair according to their historical contacts may improve the accuracy of forecasting contact probability than a unified globe $\lambda$. In addition, for Beijing taxi trace data on June 13th, the average contact time is $44.6s$ and the average ICT is $2904.3s$. These results are consistent with the three assumptions above.
 
 To further confirm that the method based on pair-wise ICT distributions can characterize the real contact pattern better than the aggregated global ICT distribution, we also use the coefficient of determination $R^{2}$ \cite{ozer1985correlation} to determine the similarity degree of modelled ICT curves and real observed curves from dataset. Note that $R^{2}$ is a number between $0$ and $1.0$, and used to describe how well a regression line fits a set of data. An $R^{2}$ near $1.0$ indicates that a regression line fits the data perfectly, while an $R^{2}$ closer to $0$ indicates that a regression line does not fit the data very well.
 
@@ -721,7 +699,7 @@ We first review basic data structures and notations used by CPCR.  Every node cr
  \begin{align*}
         \left\{
         \begin{array}{l}
-            Node = \tabincell{c}{(id, cid, ContactTable, GatewayTable, ConnectionList, MessageList, timer)}\\
+            Node = \tabincell{l}{(id, cid, ContactTable, GatewayTable,\\ConnectionList, MessageList, timer)}\\
             ContactTable = \{ContactRecord_1,\cdots, ContactRecord_n\}\\
             GatewayTable = \{GatewayRecord_1,\cdots, GatewayRecord_m\} \\
             ConnectionList=\{Connection_1,\cdots, Connection_o\}\\
@@ -746,12 +724,12 @@ Table \ref{detal_data_structure} gives all notations used here.
     $cid$ & unique identifier of cluster which contains the node\\
     $ContactTable$ & a table stores contact records\\
     $GatewayTable$ & a table stores gateway records\\
-    $ConnectionList$ & a list stores all connections, which are established, when nodes contacts\\
-    $MessageList$ & a list stores messages and their historical info\\
-    $timer$ & a timestamp to remind nodes of periodic updating\\
+    $ConnectionList$& stores all established connections\\
+    $MessageList$ & stores messages and their historical info\\
+    $timer$ & to remind nodes of periodic updating\\
    \hline
     $ContactRecord$  & contacts to other nodes and their contact-probability\\
-    $GatewayRecord$ & cluster id, the gateway node id to the cluster, and a timeout field\\
+    $GatewayRecord$ & gateway nodes info, with a timer\\
     $Connection$ & message information and the other contacting node\\
     $remoteEndNode$ & the other contacting node\\
     $message$ & data needs to transmit\\
@@ -790,11 +768,11 @@ CPCR use the above clustering criteria to perform the clustering among mobile no
 Therefore, the clustering algorithm in DTNs should be distributed, heuristic and self-maintaining. In CPCR, nodes cooperatively execute the clustering algorithm and communicate with other nodes. The concept of cluster head, which acts as a coordinator in most clustering designs, is not introduced in CPCR. In our opinion, nodes are homogeneous because of their similar communication and computation abilities in DTNs. Moreover, it is difficult to avoid redundant bottlenecks when routing with cluster heads.
 The detailed overall clustering method is given in Algorithm \ref{algorithm_clustering} which includes information exchange upon contact, periodic updating of $ContactTable$ and $GatewayTable$, and deleting related gateway records when they expire.
 
-\begin{algorithm*}[!t]
+\begin{algorithm}[!t]
 \caption{Clustering Algorithm}\label{algorithm_clustering}
 \begin{algorithmic}
-\STATE \textbf{Initialization:} $timer \Leftarrow CurrentTime$,
-$ContactTable \Leftarrow NULL$, $GatewayTable \Leftarrow  NULL$, $cid \Leftarrow id$
+\STATE \textbf{Initialization:} $timer \Leftarrow CurrentTime$,\\
+$ContactTable \Leftarrow NULL$, \\$GatewayTable \Leftarrow  NULL$, $cid \Leftarrow id$
 \WHILE{$Simulation \neq end$}
     \IF{Contacting}
         \STATE Contacting()
@@ -809,7 +787,7 @@ $ContactTable \Leftarrow NULL$, $GatewayTable \Leftarrow  NULL$, $cid \Leftarrow
     \ENDIF
 \ENDWHILE
 \end{algorithmic}
-\end{algorithm*}
+\end{algorithm}
 
 \smallskip
 \textbf{Initialization:} Initially, each node generates a cluster only including itself. The node also sets $ContactTable$ and $GatewayTable$ empty.
@@ -927,7 +905,7 @@ If the message's destination is node $j$,  node $i$ will send the message to nod
       \item Three nodes ($i$, $j$, and the destination node) belong to three different clusters. In this case, local node will send a copy to the remote node, only if there is no copy in the cluster of node $j$. When message has been sent, node $i$ will store a record that the $cluster_j$ has a copy of the message, avoid of sending a message to the same cluster again.
 \end{enumerate}
 
-We determine whether two nodes are in the same cluster by explore the $ContactTable$ and $GatewayTable$ of the local node. If we can neither find a record for a destination in $ContactTable$, nor find a gateway to the target cluster, inter-cluster procedure for the third condition will be executed.
+Whether two nodes are in the same cluster is determined by exploring the $ContactTable$ and $GatewayTable$ of the local node. If we can neither find a record for a destination in $ContactTable$, nor find a gateway to the target cluster, inter-cluster procedure for the third condition will be executed.
 
 \section{Performance Evaluation}
 \label{Section6_simulation}
@@ -959,7 +937,7 @@ All routing methods are implemented in Opportunistic Networking Environment (ONE
 
 \subsection{Clustering Evaluation}
 
-In this section, we aim to evaluate the performance of our clustering method by using the average scale of clusters (i.e., the average node numbers in a cluster). Note that the average scale of clusters is affected by clustering rules and is an important criterion for evaluating clustering performance. Whether or when the cluster becoming stable is another criterion for evaluation. Quantifying a certain clustering criterion in different scenarios is not easy. For example, in a small-scale network with high node density, small-scale clusters may be better than large clusters for message delivery.
+ In this section, it aims to evaluate the performance of our clustering method by using the average scale of clusters (i.e., the average node numbers in a cluster). Note that the average scale of clusters is affected by clustering rules and is an important criterion for evaluating clustering performance. Whether or when the cluster becoming stable is another criterion for evaluation. Quantifying a certain clustering criterion in different scenarios is not easy. For example, in a small-scale network with high node density, small-scale clusters may be better than large clusters for message delivery.
 McDonald and Znati \cite{zcMcdonaldZnati-30} proposes a method of comparing the clustering performance when change its own factor. We adapt their approach to evaluate our clustering algorithm. Simulation parameters of our clustering algorithm are shown in Table \ref{table_label_parameter_settings}, in which the variable parameters are the node number, the contact probability threshold $\eta$ and the contact forecast time $t$.
 
 The average scale of clusters reflects the granularity of clustering, and the curve of the change of the average scale of clusters can indicate whether a cluster can become stable. Two node scales (i.e. node numbers), namely, $1,000$ and $1,500$, are chosen to compare the clustering performance by changing a single parameter, contact probability threshold or contact forecast time. Figures \ref{figure_label_Scale_with_different_eta} and Figure \ref{figure_label_average_scale_w_t} illustrate the change of the average scale of the cluster with time.
