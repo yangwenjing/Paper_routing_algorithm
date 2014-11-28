@@ -78,7 +78,7 @@
 \DeclareGraphicsExtensions{.eps,.ps,.eps.gz,.ps.gz,.eps.Z}
 
 \newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
-
+\IEEEoverridecommandlockouts
 
 %% Use the option review to obtain double line spacing
 %% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
@@ -134,7 +134,7 @@
 
 % *** CITATION PACKAGES ***
 %
-%\usepackage{cite}
+%%\usepackage{cite}
 % cite.sty was written by Donald Arseneau
 % V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
 % \cite{} output to follow that of IEEE. Loading the cite package will
@@ -394,7 +394,9 @@
 Beijing, P.R.China\\
 Email: yangwenjing@sse.buaa.edu.cn}
 \and
-\IEEEauthorblockN{Haiquan Wang}
+\IEEEauthorblockN{Haiquan Wang\thanks{
+ This research has been partially supported by the US National Science Foundation (NSF) under Grant No. CNS-1319915 and CNS-1343355, the National Natural Science Foundation of China (NSFC) under Grant No.61300173 and No. 61170295, the Project of Aeronautical Science Foundation of China under Grant No.2013ZC51026 and No.2011ZC51024, the Fundamental Research Funds for the Central Universities under Grant No. YWF-12-LXGY-001, and the State Key Laboratory Software Development Environment and Network Information and Computing Center of Beihang University.
+}}
 \IEEEauthorblockA{School of Software\\Beihang University\\
 Beijing, P.R.China\\Beijing Key Laboratory of\\Network Technology
 Beijing, P.R.China\\
@@ -909,10 +911,6 @@ Figure \ref{figure_label_clusterPerformance-overhead}(b) reveals the superior sc
 
 In this paper, we analyzed the contact characteristics of large-scale urban DTNs over a real-world trace dataset from Beijing.  Distribution of ICT exhibits an exponential nature in such kind of urban DTN networks. To improve the scalability of routing protocols, we proposed a clustering-based routing algorithm by using contact probability estimated from ICT distributions as the clustering metric. Extensive simulation results demonstrated that the performance and scalability of the proposed framework exceed those of traditional single-strategy protocols. There are several possible future extensions of this study. First, the algorithm can be evaluated from the aspect of clustering in terms of its stability and maintenance overhead. Second, the algorithm can be further improved to be more adaptive by understanding the influence of parameters. Last, real-world deployment of the proposed method can be used to evaluate its effectiveness and suitability for real-life application. We leave all these as our future work.
 
-\section{Acknowledgment}
-\label{ACKNOWLEDGMENTS}
-
- This research has been partially supported by the US National Science Foundation (NSF) under Grant No. CNS-1319915 and CNS-1343355, the National Natural Science Foundation of China (NSFC) under Grant No.61300173 and No. 61170295, the Project of Aeronautical Science Foundation of China under Grant No.2013ZC51026 and No.2011ZC51024, the Fundamental Research Funds for the Central Universities under Grant No. YWF-12-LXGY-001, and the State Key Laboratory Software Development Environment and Network Information and Computing Center of Beihang University.
 
 
 
