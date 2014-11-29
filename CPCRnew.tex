@@ -376,14 +376,14 @@
 
 
 % correct bad hyphenation here
-\hyphenation{op-tical net-works semi-conduc-tor}
+%%\hyphenation{op-tical net-works semi-conduc-tor}
 
 
 \begin{document}
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{CPCR: Contact-Prediction Clustering-based Routing in Large-scale Urban Vehicular Delay Tolerant Networks}
+\title{CPCR: Contact-Prediction Clustering-based Routing \\in Large-scale Urban Vehicular Delay Tolerant Networks}
 
 
 % author names and affiliations
@@ -444,17 +444,7 @@ Email: zjt@buaa.edu.cn\\Email: zjj@buaa.edu.cn}}
 
 \begin{abstract}
 %\boldmath
-As increasing of the network scale, hierarchical routing methods perform better in scalability compared with flat strategies.
-However, maintaining the groups based on large amount of historical information is costly in a large dynamic network.
-We propose a hierarchical clustering-based routing method CPCR, which is decentralized and only makes use of contact
-information exchanges between nodes, to achieve scalability and limit resource consumption in large-scale urban
-Delay Tolerant Networks (DTNs). Via analyzing a large taxi trace data in Beijing, we discovery how to use an exponential
-distribution to model the contact characteristics between nodes and how to measure the similarity among such distributions.
-With such information, CPCR can obtain the contact probability in real-time for each nodal pair and ensure that nodes in
-the same cluster have higher contact strength during clustering. Accordingly, in CPCR, intra-cluster routing conducts via
-a direct delivery, while inter-cluster routing chooses to flood to the remaining clusters or only relays to the destination cluster
-adaptively. Our simulation results over the Beijing taxi traces show that the proposed method can achieve the efficacy of clustering
-and good scalability of routing.
+Routing in Public Transport Networks is particularly challenging due to the high mobility, rapidly changing topology. Though clustering of nodes can aid forwarding decision in these Delay Tolerant Networks (DTNs), centralized clustering process is extremely costly in a large network. Moreover, it is critical to choose proper metrics to cluster nodes. In this paper, we propose a contact-predict clustering-based routing algorithm, CPCR, for large-scale urban DTNs. This algorithm computes the probability for each node pair and cluster that nodes distributively into higher contact-strength clusters using nodal local contact information. Depending on the clusters, intra-cluster and inter-cluster routing strategies will be adopted. Extensive simulations indicate that CPCR maintains relatively stable clusters and enhances the routing performance. The results demonstrate that clustering-based routing algorithm is rational and promising for large-scale urban DTNs.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -487,7 +477,7 @@ clustering,  inter-contact time ,contact prediction ,delay tolerant networks
 \label{INTRODUCTION}
 % no \IEEEPARstart
 Delay Tolerant Networks (DTNs) \cite{aFall-2,cAhmedSalil-4} is a branch of networks,
-where communication links only exist temporarily with a highly dynamic topology. One of such examples is vehicular network where vehicles communicate with each other in order to disseminate data using opportunistic contacts. To communicate in such an challenging environments, numerous DTN routing methods have been proposed over the last decade.
+where communication links only exist temporarily with a highly dynamic topology. One of such examples is vehicular network, in which, vehicles communicate with each other in order to disseminate data using opportunistic contacts.
 
 Traditional flat routing methods, such as \emph{Direct Delivery} (DD) \cite{eKleywegtNori-6} and \emph{Epidemic Routing} \cite{gVahdatBecker-8}, become not scalable to large-scale DTNs. Meanwhile, clustering-based approaches have long been considered as an effective approach to reduce network overhead and improve scalability in traditional mobile ad hoc networks \cite{hAgarwalMotwani-9,iLiuLiu-10,jWangMi-11,kWhitbeckConan-12} with relatively stable topology and more communication opportunity.
 Clustering in DTNs is unique \cite{uHaHongyi-22,kernal2005survey}, because the network topology is not always fully connected. As a result, it becomes much more challenging to formulate clusters and ensure their stability. When we consider an urban DTN, the nodal scale and mobility will further increase the cost of maintaining clusters.
@@ -581,7 +571,7 @@ To further confirm that the method based on pair-wise ICT distributions can char
 
 For the global ICT method,  we attract the $\lambda$ based on all contact records, and result $\lambda= 0.00077527$. For the pair-wise ICT method, we use Equation  \ref{equation_label_lambda} to learn the individual $\lambda_{ij}$ for each nodal pair. Then we calculate  $R^{2}$  between the estimated distributions based on $\lambda$ or $\lambda_{ij}$ with the real distributions from traces of individual nodal pairs in the dataset. Figure \ref{figure_label_Comparison_between_R2} shows plots of such comparison over  $500$ randomly generated nodal pairs. Clearly, $R^{2}$ differs for each pair of nodes. The blue line in both plots are the average $R^{2}$. The global ICT method has an average of $R^{2}$ at $0.717$ while the pair-wise one is $0.822$. This confirm that using pair-wise ICT distribution can fit the real records better and thus give better contact probability over the global fitting method. Therefore, in our proposed clustering method, we use a distributed algorithm to estimate $\lambda_{ij}$ for every nodal pair.
 
-\section{Contact-Prediction Clustering-based Routing (CPCR)}
+\section{Routing based on Clusters}
 \label{Section4_algorithm}
 
 Now we are ready to describe the proposed \emph{Contact-Prediction Clustering-based Routing} method (CPCR).
@@ -589,7 +579,7 @@ CPCR leverages the estimated pair-wise ICT distribution (via Equation \ref{equat
 CPCR perform its intra- and inter-cluster routing strategies, respectively.
 
 \subsection{Data Structure and Notations}
-We first review basic data structures and notations used by CPCR.  Every node creates or updates its local information upon different events, e.g., happen to contact, periodic update, or record timeout. The following data structures are used at each node.
+We first review basic data structures and notations in CPCR. The following data structures are used at each node.
  \begin{align*}
         \left\{
         \begin{array}{l}
@@ -804,7 +794,7 @@ Whether two nodes are in the same cluster is determined by exploring the $Contac
 \section{Performance Evaluation}
 \label{Section6_simulation}
 
-In this section, we present results from three set of simulation experiments over Beijing taxi dataset to evaluate the efficiency of proposed clustering and routing method CPCR and its scalability. We first evaluate the clustering performance and determine the parameter settings of $(t, \eta)$. We then compare delivery ratio and overhead of three single-strategy routing protocols with CPCR in the large-scale urban DTNs scenario to demonstrate its routing performance. The three compared routing methods are \emph{Epidemic Routing} \cite{VahdatBecker-779}, \emph{Direct Delivery} (DD) \cite{BalasubramanianLevine-489} and \emph{PRoPHET}. Notice that  Epidemic and DD are used in the inter-cluster and intra-cluster phases of CPCR respectively.  PRoPHET is a two-hop forwarding strategy whose forwarding strategy is also based on the estimated contact probability. Last, with different network scales, we reveal the scalability of all methods.
+In this section, we present results from three set of simulation experiments over Beijing taxi dataset to evaluate the efficiency of proposed clustering and routing method CPCR and its scalability. We first evaluate the clustering performance and determine the parameter settings of $(t, \eta)$. We then compare delivery ratio and overhead of three single-strategy routing protocols with CPCR in the large-scale urban DTNs scenario to demonstrate its routing performance. The three compared routing methods are \emph{Epidemic Routing}, \emph{Direct Delivery} (DD) and \emph{PRoPHET}. Notice that  Epidemic and DD are used in the inter-cluster and intra-cluster phases of CPCR respectively.  PRoPHET is a two-hop forwarding strategy whose forwarding strategy is also based on the estimated contact probability. Last, with different network scales, we reveal the scalability of all methods.
 
 All routing methods are implemented in Opportunistic Networking Environment (ONE)\cite{KeranenOtt-155} simulator which is designed for evaluating DTN routing and application protocols. It allows users to create scenarios based upon different synthetic movement models and real-world traces and offers a framework for implementing routing and application protocols (already including six well-known routing protocols). All simulation scenarios are extracted from the Beijing taxi dataset we described in Section \ref{Trace Data} and imported to ONE as movement models.
 \begin{table}[!t]
@@ -909,7 +899,7 @@ Figure \ref{figure_label_clusterPerformance-overhead}(b) reveals the superior sc
 \section{Conclusion}
 \label{Section6_conclusions}
 
-In this paper, we analyzed the contact characteristics of large-scale urban DTNs over a real-world trace dataset from Beijing.  Distribution of ICT exhibits an exponential nature in such kind of urban DTN networks. To improve the scalability of routing protocols, we proposed a clustering-based routing algorithm by using contact probability estimated from ICT distributions as the clustering metric. Extensive simulation results demonstrated that the performance and scalability of the proposed framework exceed those of traditional single-strategy protocols. There are several possible future extensions of this study. First, the algorithm can be evaluated from the aspect of clustering in terms of its stability and maintenance overhead. Second, the algorithm can be further improved to be more adaptive by understanding the influence of parameters. Last, real-world deployment of the proposed method can be used to evaluate its effectiveness and suitability for real-life application. We leave all these as our future work.
+In this paper, we analyzed the contact characteristics of large-scale urban DTNs over a real-world trace data set from Beijing.  Distribution of ICTs exhibits an exponential nature in such kind of urban DTN networks. To improve the scalability of routing protocols, we proposed a clustering-based routing algorithm by using contact probability estimated from ICTs distributions as the clustering metric. The extensive simulation results demonstrated that the performance and scalability of CPCR exceed those of traditional flat protocols. 
 
 
 
@@ -944,7 +934,7 @@ In this paper, we analyzed the contact characteristics of large-scale urban DTNs
 
 %%%\end{thebibliography}
 
-\bibliographystyle{elsarticle-num}
+\bibliographystyle{ieee}
 %%  \bibliography{<your bibdatabase>}
 \bibliography{cpcra}
 
