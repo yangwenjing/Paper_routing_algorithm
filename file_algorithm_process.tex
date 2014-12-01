@@ -1,0 +1,187 @@
+\section{Clustering and Routing Desgin}
+\label{Section4_algorithm}
+
+Now we are ready to describe the \emph{Contact-Prediction Clustering-based Routing} (CPCR) algorithm.
+The CPCR leverages the estimated pair-wise ICT distribution (via Equation \ref{equation_label_lambda}) to predict the contact probability among nodes (using Equation \ref{equation_label_probability}), and uses such probabilities to form clusters. Based on the clustering, CPCR perform its intra- and inter-cluster routing strategies, respectively.
+
+Basic data structures and notations in CPCR is reviewed as follows.
+\begin{equation}
+ Node :<N_i, C_i, \{CR\}, \{GR\}, \{Msg\},timer>
+\end{equation}
+\begin{equation}\label{xxx}
+  CR :<N_i,encounters,timestamp,\sum ICT,prob>
+\end{equation}
+\begin{equation}\label{xxx2}
+GR :<C_i,N_i,prob,ttl>
+\end{equation}
+\begin{equation}\label{xxx3}
+Msg:<N_i,content,ttl>
+\end{equation}
+Where $N_i$ is the node ID, $C_i$ is its cluster ID, CR represents a contact record, GR donates the gateway records. Msg donates the message carried by the node. For each node, a timer is set to update the those information above periodically. In a CR, it records the encounter times by field $encounters$ and the sum of ICTs by $\sum ICT$. It also records the timestamp of latest disconnection in order to figure out next ICT.
+
+
+
+\subsection{Clustering Criteria}
+\label{section_label_clustering_criterion}
+CPCR utilizes $prob_{ij}(t)$, contact probability for nodes $i$ and $j$ in time period $t$, as the clustering metric. Hereafter, $prob_{ij}(t)$ can be simplified as $p_{ij}$. The clustering criteria is given as follows:
+
+  \textbf{Criterion 1:} We group nodes with contact probability higher than a probability threshold $\eta$ into clusters.
+
+  \textbf{Criterion 2:} If a node conforms with the Criterion 1 for two or more clusters, the node will join the most stable cluster. To simplify, we define the cluster with larger minim of contact probability in cluster is more stable.
+
+Accordingly, a cluster can be represented as a collection of nodes as follows:
+    \begin{equation}\label{equation_collections}
+          C= \{ ID_{k} | k=1,2,\dots,n;\forall i,j\in \{1,2,3,\dots,n\},p_{ij}(t)>\eta\}.
+    \end{equation}
+Assume based on Criterion 1 node $i$ belongs to two cluster $C_m$ and $C_n$, i.e., $p_{ij}>\eta, p_{ik}>\eta$ for ${\forall j,k, j \in C_m, k \in C_n}$.  In this case, we use the minimum contact probability in a cluster to represent the stability of that cluster. By comparing $\min(p_{m_1m_2})$ and $\min(p_{n_1n_2})$, $\forall m_1,m_2 \in C_m$ and $\forall n_1,n_2 \in C_n$, node $i$ will join the cluster with higher minimum probability.
+
+Note that two parameters $t$ and $\eta$ can affect the contact probability and thus affect the results of clustering. When $\eta$ is a constant, a smaller $t$ decreases $p_{ij}(t)$ so that fewer nodes will meet the clustering criterion. Thus, smaller but more stable
+clusters will be generated. As a consequence, the overhead of intra-cluster routing and clustering maintenance will decrease whereas the overhead of inter-cluster routing will increase. On the other hand, increasing $\eta$ can increase the contact strength in clusters and guarantee the efficiency of intra-cluster routing, whereas, more clustering fragments will occur. Overall, reasonable values of $t$ and $\eta$ need to be configured for tradeoff between clustering and routing.
+
+
+
+\subsection{Distributed Clustering based on Contact Prediction}
+\label{section_label_clustering_procedure}
+
+CPCR use the above clustering criteria to perform the clustering among mobile nodes.  The assumption that the network topology remains static in the initial clustering phase in MANET applications, does not apply to DTNs where nodes move randomly over time.
+Therefore, the clustering algorithm in DTNs should be distributed, heuristic and self-maintaining. In CPCR, nodes cooperatively execute the clustering algorithm and communicate with other nodes. The concept of cluster head, which acts as a coordinator in most clustering designs, is not introduced in CPCR. In our opinion, nodes are homogeneous because of their similar communication and computation abilities in DTNs. Moreover, it is difficult to avoid redundant bottlenecks when routing with cluster heads.
+The detailed overall clustering method is given in Algorithm \ref{algorithm_clustering} which includes information exchange upon contact, periodic updating of $ContactTable$ and $GatewayTable$, and deleting related gateway records when they expire.
+
+\begin{algorithm}[!t]
+\caption{Clustering Algorithm}\label{algorithm_clustering}
+\begin{algorithmic}
+\STATE \textbf{Initialization:} $timer \Leftarrow CurrentTime$,\\
+$ContactTable \Leftarrow NULL$, \\$GatewayTable \Leftarrow  NULL$, $cid \Leftarrow id$
+\WHILE{$Simulation \neq end$}
+    \IF{Contacting}
+        \STATE Contacting()
+    \ELSE[$CurrentTime - timer > t$]
+        \STATE Period-Updating()
+        \FORALL{$GatewayRecord \in GatewayTable$}
+            \IF{GatewayRecord.isTimeout}
+                \STATE $GatewayTable.remove(GatewayRecord)$
+            \ENDIF
+        \ENDFOR
+        \STATE $timer \Leftarrow CurrentTime $
+    \ENDIF
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+\smallskip
+\textbf{Initialization:} Initially, each node generates a cluster only including itself. The node also sets $ContactTable$ and $GatewayTable$ empty.
+
+\smallskip
+\textbf{Happen to Contact:} When two nodes move into each other's communication range, two nodes will execute the process shown in Algorithm \ref{algorithm_contacting}.
+
+\begin{algorithm}[!t]
+\caption{Contacting}\label{algorithm_contacting}
+\begin{algorithmic}
+\FORALL{$Connection \in ConnectionsList$}
+\STATE $OtherNodes \Leftarrow Connection.remoteEndNode$
+\STATE $ContactRecord \Leftarrow ContactTable[OtherNodes]$
+\IF{$Connection = established$}
+\STATE $ContactRecord.\sum ICT += CurrentTime-ContactRecord.timestamp$
+\STATE $ContactRecord.contactTimes++$
+\STATE $ContactRecord.contactProb =1-\exp\{-\frac{ContactRecord.contactTimes}{ContactRecord.\sum ICT}t\}$
+\IF{$cid=OtherNodes.cid$}
+\STATE $isBetterGateway(OtherNodes)$
+\ELSE[$cid \neq OtherNodes.cid$]
+\STATE $whetherToJoinOtherCluster(OtherNodes)$
+\ENDIF
+\ELSE[$Connection = destoried$]
+\STATE $ContactRecord.timestamp = CurrentTime$
+\ENDIF
+\ENDFOR
+\STATE Gateway-Updating()
+\end{algorithmic}
+\end{algorithm}
+
+First, the cluster information of the other node is required. Upon contacting with node $j$, node $i$ will add or update the contact record with node $j$ and re-calculate the contact probability with node $j$ by Equation \ref{equation_label_probability}.
+If $cid_i=cid_j$, node $i$ add or update the record in $GatewayTable_{i}$. Node $i$ will decide whether or not node $j$ can be a better gateway to cluster $cid_m$, when $cid_m \neq cid_j$, as follows:
+\begin{enumerate}
+      \item Node identifies the maximum contact probability to cluster $cid_j$ in $ContactTable_j$, which is denoted as:
+\begin{center}
+    $p_j^{cid_m}=MAX\left\{
+    p_{jk}|\forall k,cid_k=cid_m
+    \right\}$.
+\end{center}
+      \item  If $p_{ij}\times p_j^{cid_m}>p_{i,gid_i^{cid_m}}\times p_i^{cid_m}$, node j can be a better gateway for node $i$ to cluster $cid_m$, node $i$ will update the relevant record and reset the gateway timeout.
+      \item In case that node $i$ has no gateway to cluster $cid_m$, node j will be set as the gateway only if node $j$ has any record which belongs to cluster $cid_m$.
+    \end{enumerate}
+If $cid_i \not= cid_j $ (i.e., $i$ and $j$ belong to different clusters), node $i$ will decide whether to join cluster $cid_j$.
+The function $whetherToJoinOtherCluster(OtherNodes)$ are decided by criteria given in Section \ref{section_label_clustering_criterion}.
+
+\smallskip
+\textbf{Periodic Updating:}
+To obtain a more precise real-time prediction, the algorithm needs to regularly update the records in $ContactTable$ and $GatewayTable$. The periodic record updating procedure is shown in Algorithm \ref{algorithm_period_updating}.
+
+\begin{algorithm}[!t]
+\caption{Period-Updating}\label{algorithm_period_updating}
+\begin{algorithmic}
+\FORALL{$ContactRecord \in ContactTable$}
+\STATE $ContactRecord.contactProb =1-\exp\{-\frac{ContactRecord.contactTimes}{ContactRecord.\sum ICT}t\}$
+\ENDFOR
+\FORALL {$ContactRecord.cid == node.cid$}
+\STATE $FLAG \Leftarrow \TRUE$
+\IF{$ContactRecord.contactProb < \eta$}
+\STATE $FLAGE \Leftarrow \FALSE$, $Break$
+\ENDIF
+\IF{$FLAG = \FALSE$}
+\STATE $Node.cid \Leftarrow newClusterID()$
+\STATE $Node.GatewayTable \Leftarrow NULL$
+\ELSE
+\STATE $Gateway-Updating()$
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+First, the local node $i$ updates $p_{ij}$ in $ContactTable_i$ with the latest $contactTimes$ and $\sum ICT$.
+Then, it will go through clustering criteria check. If the node passes Criterion 1, it will remain in the original cluster.
+Updating $ContactTable$ may change node $i$'s probability to the other clusters. Therefore, node $i$ will also update $GatewayTable_i$ to set the new or better gateway to other clusters. The gateway in $GatewayTable_i$ must in the same
+cluster of node $i$. If the node does not pass Criterion 1, it will leave its original cluster and construct a new isolated cluster
+which only includes itself. In such a situation, the node will keep its own $ContactTable$, while $GatewayTable$ will be set empty, since the old gateway records are meaningless to the new established cluster.
+
+\subsection{Clustering-based Routing Scheme}
+\label{section_label_routing_procedure}
+Based on dynamically formed clusters, our clustering-based routing procedure can be divided into intra- and inter cluster routing procedures. If destination node is in the same cluster of a node, a single-copy routing strategy will be executed as intra-cluster routing algorithm. The local node will not deliver the packet until contacted by the destination node. Considering high contact probability inside a cluster, such direct delivery can simplify route decision making and ensure acceptable delay in the intra-cluster routing.
+If the local node and the destination belong to the different clusters, inter-cluster flooding approach will be used. Every cluster is considered as an abstract "node". Therefore, it ensures that a cluster can only accept no more than one copy of a message.
+Since CPCR is event-driven, the routing procedure will be executed when contacts happen. When node $i$ contacts with node $j$, node $i$ will traverse every message to determine whether or not to relay the messages. The routing procedure can be described as Algorithm \ref{algorithm_routing_procedure}.
+
+ %%Routing after Contacting
+\begin{algorithm}
+\caption{Clustering-based Routing}\label{algorithm_routing_procedure}
+\begin{algorithmic}
+    \IF{$Connection = established$}
+        \STATE $remoteNode \Leftarrow Connection.remoteNode$
+        \FORALL{$message \in MassageList$}
+            \STATE $destination \Leftarrow message.destination$
+            \IF{$destination = remoteNode$}
+                \STATE $sendAndDelete(message)$, CONTINUE
+            \ENDIF
+            \IF{$belongToSameCluster(this, destination)$}
+                \STATE CONTINUE
+           \ENDIF
+            \IF{$belongToSameCluster(destination,remoteNode)$}
+                \STATE $sendAndDelete(message)$
+            \ELSE[$belongToSameCluster(this,remoteNode)$ ]
+                \IF{$isGateway(remoteNode,destination.cid)$}
+                   \STATE $sendAndDelete(message)$
+                \ENDIF
+            \ELSE
+                \STATE $copyAndDelete(message)$
+             \ENDIF
+        \ENDFOR
+    \ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+If the message's destination is node $j$,  node $i$ will send the message to node $j$. Then, the message will be deleted (as $sendAndDelete(message)$). If the destination of the message is in the same cluster of local node, message will not be relayed until the local node meets the destination node, which can be considered as intra-cluster routing. For inter-cluster routing where the remote node $j$ is not the destination and not in the same cluster of the local node, node $j$ can be a relay point if it satisfies one of following circumstances:
+\begin{enumerate}
+      \item The target cluster of the message is the same as the cluster of node $j$.
+      \item The node $j$ is the gateway node from the cluster of node $i$ to the target cluster. As the definition for gateway, we can figure out that node $j$ belongs to the same cluster as the local node.
+      \item Three nodes ($i$, $j$, and the destination node) belong to three different clusters. In this case, local node will send a copy to the remote node, only if there is no copy in the cluster of node $j$. When message has been sent, node $i$ will store a record that the $cluster_j$ has a copy of the message, avoid of sending a message to the same cluster again.
+\end{enumerate}
+
+Whether two nodes are in the same cluster is determined by exploring the $ContactTable$ and $GatewayTable$ of the local node. If we can neither find a record for a destination in $ContactTable$, nor find a gateway to the target cluster, inter-cluster procedure for the third condition will be executed. 
