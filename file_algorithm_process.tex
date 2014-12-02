@@ -6,21 +6,22 @@ The CPCR leverages the estimated pair-wise ICT distribution (via Equation \ref{e
 \subsection{Notation Definition}
 Basic data structures and notations in CPCR is reviewed as follows.
 \begin{equation}
- Node :<N_i, C_i, \{CR\}, \{GR\}, \{Msg\},\{MLog\},timer>
+ Node :<id, cid, \{CR\}, \{GR\}, \{Msg\},\{MLog\}>
 \end{equation}
 \begin{equation}\label{xxx}
-  CR :<N_i,encounters,timestamp,\sum ICT,prob>
+  CR:<id,cid,encounters,T_{disconnect},\sum ICT,prob>
 \end{equation}
 \begin{equation}\label{xxx2}
-GR :<C_i,N_i,prob,ttl>
+GR :<cid,id,prob,T_{established}>
 \end{equation}
 \begin{equation}\label{xxx3}
-Msg:<M_i,N_i,content,ttl>
+Msg:<mid,id,content,ttl>
 \end{equation}
 \begin{equation}\label{xxx4}
-MLog:<M_i,\{C_i\},status,ttl>
+MLog:<mid,\{<cid,T_{delivery}>\},status,>
 \end{equation}
-Where $N_i$ is the node ID, $C_i$ is its cluster ID, CR represents a contact record, GR donates the gateway records. Msg donates the message carried by the node. For each node, a timer is set to update the those information above periodically. In a CR, it records the encounter times by field $encounters$ and the sum of ICTs by $\sum ICT$. It also records the timestamp of latest disconnection in order to figure out next ICT.
+
+Where $id$ is the node ID, $cid$ is its cluster ID, CR represents a contact record, GR donates the gateway records. Msg donates the message carried by the node. For each node, a timer is set to update the those information above periodically. In a CR, it records the encounter times by field $encounters$ and the sum of ICTs by $\sum ICT$. It also records the timestamp of latest disconnection as $T_{disconnect}$ in order to figure out next ICT. Every message also contains an ID, say $mid$. In addition, when every message is delivered, the $\{MLog\}$ will store the cid and the current time to figure out which cluster this message has been delivered to, et al.
 
 \subsection{Clustering Criteria}
 CPCR utilizes $prob_{ij}(t)$, contact probability for nodes $i$ and $j$ in time period $t$, as the clustering metric. Hereafter, $prob_{ij}(t)$ can be simplified as $p_{ij}$. The clustering criteria is given as follows:
@@ -28,24 +29,71 @@ CPCR utilizes $prob_{ij}(t)$, contact probability for nodes $i$ and $j$ in time 
   \textbf{Criterion 1:} We group nodes with contact probability higher than a probability threshold $\eta$ into clusters.
 
   \textbf{Criterion 2:} If a node conforms with the Criterion 1 for two or more clusters, the node will join the most stable cluster. To simplify, we define the cluster with larger minim of contact probability in cluster is more stable.
-  
+
 \subsection{Routing Strategy}
- 
+
 Based on dynamically formed clusters, our clustering-based routing procedure can be divided into intra-cluster and inter cluster routing procedures. If destination node is in the same cluster of a node, a single-copy routing strategy will be executed as intra-cluster routing algorithm. The local node will not deliver the packet until contacted by the destination node. Considering high contact probability inside a cluster, such direct delivery can simplify route decision making and ensure acceptable delay in the intra-cluster routing.
 
-If the local node and the destination belong to the different clusters, inter-cluster flooding approach will be used. Every cluster is considered as an abstract "node". Therefore, it ensures that a cluster can only accept no more than one copy of a message.
+If the local node and the destination belong to the different clusters, inter-cluster flooding approach will be used. Every cluster is considered as an abstract "node". Therefore, it can control the message copies in a cluster.
 
 \subsection{Event-driven process to form clusters and delivery messages}
 
-Since the packets are delivered only when there exists connections between nodes, the following update processing is triggered when contacts happen.
+Since the packets are delivered only when there exists connections between nodes, the following processes ,including updating the contact and gateway records, adopting the messages need to be delivered and send those message and finally updating the logs of messages and the massages,are triggered off when a connection is established, as algorithm \ref{algorithm_connecting}. Meanwhile, when a connection is dismissed, it will update the CR with remote node of the connection and set the $T_{disconnect}$ to the current time.
 
-\begin{algorithm}[!t]
-\caption{Connecting}
-\STATE $updateCRs()$\\
-\STATE $updateGRs()$\\
-\STATE $Msgs = getValidMsgs()$\\
-\STATE $delivery(Msgs)$\\
+\begin{algorithm}[!h]\label{algorithm_connecting}
+\caption{algorithm when a connection is established}
+\begin{algorithmic}
+\STATE $updateCRs();$\\
+\IF{$this.Cluster!=remoteNode.Cluster$}
+\STATE $joinOrNotRemoteCluster();$\\
+\ENDIF 
+\STATE $updateGRs();$\\
+\STATE $msgs = getValidMsgs();$\\
+\STATE $delivery(msgs);$\\
+\STATE $updateMLogs();$\\
+\STATE $updateMsgs();$\\
+\end{algorithmic}
 \end{algorithm}
 
- 
 
+
+\textbf{update CRs:} When node $N_i$ contacts with node $N_j$, CRs will be updated. If $\exists CR=<N_j,,.>\in \{CR\}_{N_i}$, the $encounters$ adds on 1 and $\sum ICT$ adds by the difference between the $T_disconnect$ and current time. Otherwise, if $CR=<N_j,,.>\notin \{CR\}_{N_i}$, a new $CR=<N_i,1,0,0,\eta>$ will be created, and set the $prob=\eta$, for that there is no $ICT$ yet.
+
+\textbf{whether to join the remote cluster:} When the local node and the other node of the connection do not belong to the same cluster, we should figure it out whether this node should join to the other cluster. If $prob_{ij}>=\eta$,and by querying the local $\{CR\}$, the minim contact prob in the cluster of the local node. Assume that the $\{CR\}$ is as table \ref{table_crs}, $\eta=0.3$ and forcast time $t=200s$.
+\begin{table}[!h]\label{table_crs}
+\caption{The contact records of node1,$cid=C1$}
+\begin{tabular}{l|l|l|l|l|l}
+  \hline
+  \textbf{id}&\textbf{cid}&\textbf{encounters}&\textbf{$T_{disconnect}$}&\textbf{$\sum ICT$}&\textbf{prob}\\
+  \hline
+  % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+  2 & C1 & 1 & 1000 & - & 0.3 \\
+  3 & C2 & 2 & 3000 & 500 & $1-e^{-0.8}=0.55$\\
+  4 & C1 & 2 & 2000 & 1000 & $1-e^{-0.4}=0.3297$ \\
+  \hline
+\end{tabular}
+\caption{The contact records of node 3,$cid=C2$}
+\begin{tabular}{l|l|l|l|l|l}
+  \hline
+  \textbf{id}&\textbf{cid}&\textbf{encounters}&\textbf{$T_{disconnect}$}&\textbf{$\sum ICT$}&\textbf{prob}\\
+  \hline
+  % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+  1 & C1 & 2 & 3000 & 500 & $1-e^{-0.8}=0.55$\\
+  5 & C2 & 2 & 2000 & 1000 & $1-e^{-0.4}=0.3297$ \\
+  6 & C2 & 1 & 2500 & - & $0.3$ \\
+  \hline
+\end{tabular}
+\end{table}
+
+In this case, the minim contact prob in $C1$ is 0.3, whereas, the mimim contact prob in $C2$ is also 0.3. So as local node, node1 will not join the cluster $C2$. Otherwise, the minum contact prob is larger than that of $C1$, node1 will join the $C2$ by assigning the $cid=C2$ and copy and replace the $\{GR\}$ from the remote node3.
+
+\textbf{Update GRs:} Gateway is a host in the same cluster, where it performs higher probability to another cluster. From the $\{CR\}$ of node1, we can only figure out the probability of node1 to a node of another cluster $C1$(node3), so a $GR=<C2,1,0.55>$ will be assigned to identify which node has the max prob to cluster $C2$. If $node1$ belongs to the same cluster of the remote node, the two $GR$ will be merged. If two GRs conflict with each other, the one with latest $T_established$ will be selected.
+
+\textbf{Get valid messages:} this process is an important step to implement the routing strategies. A node can carry many messages. When contacting with another node, routing strategies are implemented by deciding which message need to be delivered. Messages satisfied following rules will be delivered.
+\begin{itemize}
+  \item The remote node is the destination node of the message.
+  \item The remote node belongs to the same cluster of the destination node (searching the $\{CR\}$ to find out the cluster of destination node if $\exists CR=<destination,C_j,...>\in\{CR\}$).
+  \item The remote node belongs to a cluster which carries no copy of the message (searching the $\{Mlog\}$).
+\end{itemize}
+
+\textbf{update MLogs and Msgs:} If a message is delivered to the remote node, the mlog will be updated in case of sending the same message to another cluster twice or more. If the remote node is the destination, the status will be set $Success$. Message out of ttl or send to destination successfully will be dropped.

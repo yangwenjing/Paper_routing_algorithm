@@ -96,7 +96,7 @@
 *.sagetex.sage
 *.sagetex.py
 *.sagetex.scmd
-
+*.sav
 # sympy
 *.sout
 *.sympy

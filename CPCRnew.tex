@@ -383,7 +383,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{CPCR: Contact-Prediction Clustering-based Routing \\in Large-scale Urban Vehicular Delay Tolerant Networks}
+\title{CPCR: Contact-Prediction Clustering-based Routing \\in Large-scale Urban Delay Tolerant Networks}
 
 
 % author names and affiliations
@@ -405,7 +405,7 @@ Email: whq@buaa.edu.cn}
 \IEEEauthorblockN{Jingtao Zhang\\ and Jiejie Zhao}
 \IEEEauthorblockA{School of Software\\Beihang University\\
 Beijing, P.R.China\\
-Email: zjt@buaa.edu.cn\\Email: zjj@buaa.edu.cn}}
+Email: {zjt,zjj}@buaa.edu.cn}}
 
 % conference papers do not typically use \thanks and this command
 % is locked out in conference mode. If really needed, such as for
@@ -479,10 +479,6 @@ clustering,  inter-contact time ,contact prediction ,delay tolerant networks
 Delay Tolerant Networks (DTNs) \cite{aFall-2,cAhmedSalil-4} is a branch of networks,
 where communication links only exist temporarily with a highly dynamic topology. One of such examples is vehicular network, in which, vehicles communicate with each other in order to disseminate data using opportunistic contacts.
 
-Traditional flat routing methods, such as \emph{Direct Delivery} (DD) \cite{eKleywegtNori-6} and \emph{Epidemic Routing} \cite{gVahdatBecker-8}, become not scalable to large-scale DTNs. Meanwhile, clustering-based approaches have long been considered as an effective approach to reduce network overhead and improve scalability in traditional mobile ad hoc networks \cite{hAgarwalMotwani-9,iLiuLiu-10,jWangMi-11,kWhitbeckConan-12} with relatively stable topology and more communication opportunity.
-Clustering in DTNs is unique \cite{uHaHongyi-22,kernal2005survey}, because the network topology is not always fully connected. As a result, it becomes much more challenging to formulate clusters and ensure their stability. When we consider an urban DTN, the nodal scale and mobility will further increase the cost of maintaining clusters.
-
-Contact characteristics among nodes \cite{nGaoCao-15,oWhitbeckConan-16,p20102413007279} have been used as one of key metrics for clustering in DTNs. Frequency and duration of historical contacts have been used as metrics to describe contact probability \cite{rLiHui-19,t20102413006168}, however they cannot provide very accurate estimation of the contact probability among nodes. Instead, the distribution of  \emph{inter-contact time} (ICT) has been shown to be powerful for describing contact characteristics \cite{rLiHui-19,qGroeneveltNain-18,s20104613388174}. ICT between two nodes directly affects the transmission delay between these two nodes, since a shorter ICT implies a greater opportunity to relay packet in a period of time.
 
 In this paper, we propose an clustering-based routing scheme for large-scale urban DTNs.  We first
 analyze a real-world urban vehicular tracing data set to reveal the Inter-contact time distributions of mobile vehicles in a large city. Our study confirm that both the global ICT and the individual ICT between each nodal pair follow the exponential distributions.
@@ -501,25 +497,8 @@ To summarize, our contributions can be highlighted as follows:
 The rest of paper is organized as follows: Section \ref{Section2_relatedwork} provides an overview of related work on DTN routing.
 Section \ref{Section3_characteristics} provides the theoretical basis of contact predicting and clustering via detailed analysis of the Beijing taxi traces. Section \ref{Section4_algorithm} presents our clustering-based routing algorithm which leverages the estimated ICT distributions to clustering nodes into groups and routes the packages accordingly. Simulation results over the Beijing taxi traces are presented in Section \ref{Section6_simulation}. Finally, Section \ref{Section6_conclusions} concludes this paper.
 
+\input{file_related_works}
 
-\section{Related Work}
-\label{Section2_relatedwork}
-
-In 2004, Jain et al. \cite{JainFall-771} first investigate the routing issues in DTNs, where messages are to be moved
-end-to-end across a graph that is time-varying and not full connected. Since then routing in DTNs has been heavily studied \cite{cao2013routing,ZXSW13-DTN-survey} over the last decade.
-Routing algorithms can be categorized into \emph{flat routing} or \emph{hierarchical routing} by the network topology.
-Flat routing methods employ only a single routing strategy globally, while all nodes play similar roles. For example,
-\emph{Epidemic Routing} \cite{VahdatBecker-779} is a simple flooding method with zero knowledge of the network topology.  Compared with some single-copy routing methods, such as \emph{Direct Delivery} \cite{BalasubramanianLevine-489}, \emph{Randomized Routing} (RR) \cite{LeightonMaggs-780},  Epidemic routing greatly improves delivery ratio but suffers from resource waste and even network congestion due to large data replication. In order to reduce the usage of resources, \emph{Spray and Wait} routing \cite{SpyropoulosPsounis-772} limits the amount of message copies in its spray phrase and lets node wait until contacted by the destination node in its wait phrase. But with such solutions, routing performance could still be poor in large-scale networks.
-Besides these flooding based schemes \cite{VahdatBecker-779,GrossglauserTse-777,SpyropoulosPsounis-778}, there is also a set of DTN routing methods based on the contact information, where a smarter relay node selection is made \cite{LindgrenDoria-782,BurgessGallagher-783}.
-For example, \emph{PRoPHET} is a probability-based method, where each node maintains the encounter history.
-
-When the network scale increases and topology evolves, however, the scalability and performance of flat routing methods are limited.
-Under this condition, hierarchical routing organizes the networks in groups via clustering techniques. It has been shown that hierarchical routing can achieve good scalability in large-scale mobile networks. However, restricted by the dynamic topology and frequently interruptions, hierarchical routing in DTNs is still in its early stages. Liu and Wu \cite{lLiuWu-1103} design a hierarchical DTN routing algorithm based on a strict mobility model, where all nodes move according to strict repetitive patterns. Their method is only effective such a specific mobility model and could not adapt to other mobility pattern. Ahmed and Kanhere \cite{mAhmedKanhere-14} adopt encounter frequencies of public transport networks to classify nodes. Nodes only relay messages to neighboring nodes which are in the same cluster of the destination node. Then epidemic routing is used to propagate messages inside the cluster.
-These clustering-based hierarchical routing methods can improve the scalability, but the resource consumption of collecting and maintaining historical information remains high.
- a hybrid DTN-MANET (HYMAD) routing was proposed by Whitbeck and Conan \cite{oWhitbeckConan-16} for dense and highly dynamic wireless networks.
-This method is decentralized and only makes use of topological information exchanges between the nodes, thus limit the storage and information exchange cost. However,  its intra-cluster routing using MANET method may be invalid. It can not suit for more complicated urban DTNs.
-
-In summary, the key challenge of hierarchical routing is the clustering method, especially in large scale DTNs. To adapt to the scenario of large scale urban DTNs and solve the routing problem, a cluster-based routing algorithm is proposed.
 \input{file_character}
 
 \input{file_algorithm_process}
@@ -561,7 +540,7 @@ The average scale of clusters reflects the granularity of clustering, and the cu
 
 Figure \ref{figure_label_Scale_with_different_eta} illustrates the curve of the cluster scale variation by changing $\eta$ from  $0.3$ to $0.15$, at a fixed forecast time of $400s$, for both network scales. A larger network scale leads lager average scale of clusters. High node density increase the opportunity to contact so that the contact probability between nodes becomes higher than $\eta$, which also increases the degree of convergence. The $\eta$ influences the average scale of clusters directly. In Figure \ref{figure_label_Scale_with_different_eta} (left), the peak value of the scale is $13.6$ with $\eta=0.15$, while the peak value is $9.4$ with $\eta =0.3$. Similar trends can be found in the right subfigure of Figure \ref{figure_label_Scale_with_different_eta}.
 
-\begin{figure}[!t]
+\begin{figure}[!htb]
 \centering
   \includegraphics[width=3.5in]{figures_1/cluster_scale_with_different_threshold.eps}\\
   \caption{Average scale of clusters for different $\eta$ (left: 1,000 nodes; right: 1,500 nodes)}\label{figure_label_Scale_with_different_eta}
@@ -577,8 +556,8 @@ Figure \ref{figure_label_average_scale_w_t} uses the same contact threshold $(\e
 In both cases, the curves can achieve stability after $2,000s$. It shows that the proposed clustering algorithm can cluster the network effectively and stably. Overall, the clustering phase can organize the network into clusters which have certain degree of granularity and achieve stability, which benefits the routing task inside and across the clusters in large-scale networks.
 
 \subsection{Routing Performance}
-
-In this set of simulations, we randomly select traces of $3,000$ vehicles from the central area ($20km \times 20km$) of Beijing. As revealed in \cite{vHuWang-23},  the central area of the city has numerous hotspot areas, which we believe is an appropriate scenario for the clustering based-routing. We investigate delivery ratio and overhead of different routing protocols under different buffer sizes. Detail parameter settings are shown in Table \ref{table_label_parameter_setting_in_ONE}.
+ 
+  As revealed in \cite{vHuWang-23},  the central area of the city has numerous hotspot areas, which we believe is an appropriate scenario for the clustering based-routing. We investigate delivery ratio and overhead of different routing protocols under different buffer sizes. Detail parameter settings are shown in Table \ref{table_label_parameter_setting_in_ONE}.
 
 Figure~\ref{figure_label_Delivery_ratio_w_buffersize}(a) shows that most protocols have higher delivery ratio with increased buffer size. The proposed routing algorithm yields a higher delivery ratio than the other single-strategy protocols because in such a large-scale scenario, clustering strategy groups nodes into different clusters, which makes the network more coarse-grained. As a result, from a single node's point of view, the network scale becomes much smaller. Furthermore, a node can make its forwarding decision inside or outside of the cluster more wisely which not only saves the buffer of local nodes, but also tends to the route with higher contact probability.
 
@@ -632,7 +611,7 @@ Figure \ref{figure_label_clusterPerformance-overhead}(b) reveals the superior sc
 \section{Conclusion}
 \label{Section6_conclusions}
 
-In this paper, we analyzed the contact characteristics of large-scale urban DTNs over a real-world trace data set from Beijing.  Distribution of ICTs exhibits an exponential nature in such kind of urban DTN networks. To improve the scalability of routing protocols, we proposed a clustering-based routing algorithm by using contact probability estimated from ICTs distributions as the clustering metric. The extensive simulation results demonstrated that the performance and scalability of CPCR exceed those of traditional flat protocols.
+In this paper, we analyzed the contact characteristics of large-scale urban DTNs over a real-world trace data set from Beijing.  Distribution of ICTs exhibits an exponential nature in such kind of urban DTN networks. To improve the scalability of routing protocols, we proposed a clustering-based routing algorithm by using contact probability estimated from node pair-wise ICT distributions as the clustering metric. It can form the clusters in a decentralized way. The simulation results demonstrate that CPCR can build relative stable clusters and performs better than other routing algorithms in routing and scalability.
 
 
 
@@ -670,40 +649,7 @@ In this paper, we analyzed the contact characteristics of large-scale urban DTNs
 \bibliographystyle{ieee}
 %%  \bibliography{<your bibdatabase>}
 \bibliography{cpcra}
-\appendix
 
-Table \ref{detal_data_structure} gives all notations used here.
-\begin{table}[!h]
-    \caption{Notations used in our data structure.}\label{detal_data_structure}
-    \vspace{.1in}
-    \begin{tabular}[c]{r|l}
-    \hline
-    \textbf{Symbol} & \textbf{Description} \\
-    \hline
-    $id$ & unique identifier of a node\\
-    $gid$ & unique identifier of gateway node $id$ to another cluster\\
-    $cid$ & unique identifier of cluster which contains the node\\
-    $ContactTable$ & a table stores contact records\\
-    $GatewayTable$ & a table stores gateway records\\
-    $ConnectionList$& stores all established connections\\
-    $MessageList$ & stores messages and their historical info\\
-    $timer$ & to remind nodes of periodic updating\\
-   \hline
-    $ContactRecord$  & contacts to other nodes and their contact-probability\\
-    $GatewayRecord$ & gateway nodes info, with a timer\\
-    $Connection$ & message information and the other contacting node\\
-    $remoteEndNode$ & the other contacting node\\
-    $message$ & data needs to transmit\\
-    $FloodingClusters$ & a collection of clusters with the message copy\\
-    $contactTimes$ & contact times between two nodes\\
-    $timestamp$ & time record, when connection is up or down\\
-    $\sum ICT$ or $\sum ICT_{ij}$ & total ICT between two nodes ($i$ and $j$)\\
-    $contactProb$ & contact probability between nodes\\
-    $timeout$ & a timestamp to decide whether a record expires\\
-    \hline
-    \end{tabular}
-\end{table}
-% that's all folks
 \end{document}
 
 
