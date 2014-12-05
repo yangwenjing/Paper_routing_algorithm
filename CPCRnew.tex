@@ -444,7 +444,7 @@ Email: {zjt,zjj}@buaa.edu.cn}}
 
 \begin{abstract}
 %\boldmath
-Routing in Public Transport Networks is particularly challenging due to the high mobility, rapidly changing topology. Though clustering of nodes can aid forwarding decision in these Delay Tolerant Networks (DTNs), centralized clustering process is extremely costly in a large network. Moreover, it is critical to choose proper metrics to cluster nodes. In this paper, we propose a contact-predict clustering-based routing algorithm, CPCR, for large-scale urban DTNs. This algorithm computes the probability for each node pair and cluster that nodes distributively into higher contact-strength clusters using nodal local contact information. Depending on the clusters, intra-cluster and inter-cluster routing strategies will be adopted. Extensive simulations indicate that CPCR maintains relatively stable clusters and enhances the routing performance. The results demonstrate that clustering-based routing algorithm is rational and promising for large-scale urban DTNs.
+Routing in Public Transport Networks is particularly challenging due to the high mobility, rapidly changing topology. Though clustering of nodes can aid forwarding decision in these Delay Tolerant Networks (DTNs), centralized clustering cannot adapt to large scale DTNs for the temporary connections. Moreover, it is critical to choose proper metrics to cluster nodes. In this paper, we propose a contact-predict clustering-based routing algorithm, CPCR, for large-scale urban DTNs. This algorithm computes the probability for each node pair and cluster that nodes distributively into higher contact-strength clusters using nodal local contact information. Depending on the clusters, intra-cluster and inter-cluster routing strategies will be adopted. Extensive simulations indicate that CPCR maintains relatively stable clusters and enhances the routing performance. The results demonstrate that clustering-based routing algorithm is rational and promising for large-scale urban DTNs.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -479,10 +479,12 @@ clustering,  inter-contact time ,contact prediction ,delay tolerant networks
 Delay Tolerant Networks (DTNs) \cite{aFall-2,cAhmedSalil-4} is a branch of networks,
 where communication links only exist temporarily with a highly dynamic topology. One of such examples is vehicular network, in which, vehicles communicate with each other in order to disseminate data using opportunistic contacts.
 
+In large-scale urban DTNs,routing is one of the most challenge problems. Whereas, the routing performance and the scalability network is restricted by the node scale. An effective way to improve the routing performance and the scalability is clustering based on various shared properties of the nodes. Therefore, the available knowledge can be utilized efficiently. However, the resource cost by maintaining clusters can be significant.
+Moreover, centralized clustering method will fail for the opportunistic connections. 
 
 In this paper, we propose an clustering-based routing scheme for large-scale urban DTNs.  We first
 analyze a real-world urban vehicular tracing data set to reveal the Inter-contact time distributions of mobile vehicles in a large city. Our study confirm that both the global ICT and the individual ICT between each nodal pair follow the exponential distributions.
-It is demonstrated that the distribution for ICT of nodal pairs is more accuracy than the global ICT distribution. Therefore, a clustering algorithm which groups nodes by the contact probability calculated from the ICT distribution for nodal pair in real-time, and propose a new clustering-based routing scheme based on this contact predication clustering.
+It is demonstrated that the distribution for ICT of nodal pairs is more accuracy than the global ICT distribution. Hence, a clustering algorithm which groups nodes by the contact probability calculated from the ICT distribution for nodal pair in real-time, and propose a new clustering-based routing scheme based on this contact predication clustering.
 
 To summarize, our contributions can be highlighted as follows:
     \begin{itemize}
@@ -556,7 +558,7 @@ Figure \ref{figure_label_average_scale_w_t} uses the same contact threshold $(\e
 In both cases, the curves can achieve stability after $2,000s$. It shows that the proposed clustering algorithm can cluster the network effectively and stably. Overall, the clustering phase can organize the network into clusters which have certain degree of granularity and achieve stability, which benefits the routing task inside and across the clusters in large-scale networks.
 
 \subsection{Routing Performance}
- 
+
   As revealed in \cite{vHuWang-23},  the central area of the city has numerous hotspot areas, which we believe is an appropriate scenario for the clustering based-routing. We investigate delivery ratio and overhead of different routing protocols under different buffer sizes. Detail parameter settings are shown in Table \ref{table_label_parameter_setting_in_ONE}.
 
 Figure~\ref{figure_label_Delivery_ratio_w_buffersize}(a) shows that most protocols have higher delivery ratio with increased buffer size. The proposed routing algorithm yields a higher delivery ratio than the other single-strategy protocols because in such a large-scale scenario, clustering strategy groups nodes into different clusters, which makes the network more coarse-grained. As a result, from a single node's point of view, the network scale becomes much smaller. Furthermore, a node can make its forwarding decision inside or outside of the cluster more wisely which not only saves the buffer of local nodes, but also tends to the route with higher contact probability.
@@ -646,7 +648,7 @@ In this paper, we analyzed the contact characteristics of large-scale urban DTNs
 
 %%%\end{thebibliography}
 
-\bibliographystyle{ieee}
+\bibliographystyle{IEEEtran}
 %%  \bibliography{<your bibdatabase>}
 \bibliography{cpcra}
 
