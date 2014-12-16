@@ -72,7 +72,7 @@
 \usepackage{color}
 \usepackage{amssymb}
 \usepackage{algorithm}
-\usepackage[noend]{algorithmic}
+\usepackage{algorithmic}
 
 \usepackage{graphicx}
 \DeclareGraphicsExtensions{.eps,.ps,.eps.gz,.ps.gz,.eps.Z}
@@ -377,8 +377,6 @@
 
 % correct bad hyphenation here
 %%\hyphenation{op-tical net-works semi-conduc-tor}
-
-
 \begin{document}
 %
 % paper title
@@ -389,23 +387,21 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Wenjing Yang\thanks{
- This research has been partially supported by the US National Science Foundation (NSF) under Grant No. CNS-1319915 and CNS-1343355, the National Natural Science Foundation of China (NSFC) under Grant No.61300173 and No. 61170295, the Project of Aeronautical Science Foundation of China under Grant No.2013ZC51026 and No.2011ZC51024, the Fundamental Research Funds for the Central Universities under Grant No. YWF-12-LXGY-001, and the State Key Laboratory Software Development Environment and Network Information and Computing Center of Beihang University.
-}}
-\IEEEauthorblockA{School of Software\\Beihang University\\
-Beijing, P.R.China\\
-Email: yangwenjing@sse.buaa.edu.cn}
-\and
+\author{
 \IEEEauthorblockN{Haiquan Wang}
-\IEEEauthorblockA{School of Software\\Beihang University\\
-Beijing, P.R.China\\Beijing Key Laboratory of\\Network Technology
+\IEEEauthorblockA{School of Software,Beihang University\\
+Beijing Key Laboratory of Network Technology\\
 Beijing, P.R.China\\
 Email: whq@buaa.edu.cn}
 \and
-\IEEEauthorblockN{Jingtao Zhang\\ and Jiejie Zhao}
-\IEEEauthorblockA{School of Software\\Beihang University\\
+\IEEEauthorblockN{Wenjing Yang\thanks{
+ This research has been partially supported by the US National Science Foundation (NSF) under Grant No. CNS-1319915 and CNS-1343355, the National Natural Science Foundation of China (NSFC) under Grant No.61300173 and No. 61170295, the Project of Aeronautical Science Foundation of China under Grant No.2013ZC51026 and No.2011ZC51024, the Fundamental Research Funds for the Central Universities under Grant No. YWF-12-LXGY-001, and the State Key Laboratory Software Development Environment and Network Information and Computing Center of Beihang University.
+}
+\\Jingtao Zhang\\ and Jiejie Zhao
+}
+\IEEEauthorblockA{School of Software, Beihang University\\
 Beijing, P.R.China\\
-Email: {zjt,zjj}@buaa.edu.cn}}
+Email: yangwenjing@sse.buaa.edu.cn}}
 
 % conference papers do not typically use \thanks and this command
 % is locked out in conference mode. If really needed, such as for
@@ -444,7 +440,7 @@ Email: {zjt,zjj}@buaa.edu.cn}}
 
 \begin{abstract}
 %\boldmath
-Routing in Public Transport Networks is particularly challenging due to the high mobility, rapidly changing topology. Though clustering of nodes can aid forwarding decision in these Delay Tolerant Networks (DTNs), centralized clustering cannot adapt to large scale DTNs for the temporary connections. Moreover, it is critical to choose proper metrics to cluster nodes. In this paper, we propose a contact-predict clustering-based routing algorithm, CPCR, for large-scale urban DTNs. This algorithm computes the probability for each node pair and cluster that nodes distributively into higher contact-strength clusters using nodal local contact information. Depending on the clusters, intra-cluster and inter-cluster routing strategies will be adopted. Extensive simulations indicate that CPCR maintains relatively stable clusters and enhances the routing performance. The results demonstrate that clustering-based routing algorithm is rational and promising for large-scale urban DTNs.
+Routing in Public Transport Networks is particularly challenging due to the high mobility, rapidly changing topology. Though clustering of nodes can aid forwarding decision in these Delay Tolerant Networks (DTNs), centralized clustering cannot adapt to large scale DTNs for the temporary connections. Moreover, it is critical to choose proper clustering metrics. In this paper, we propose a contact-predict clustering-based routing algorithm, CPCR, for large-scale urban DTNs. This algorithm computes the probability for each node pair and cluster nodes into higher contact-strength clusters using nodal local contact information in a distributed way. Depending on the clusters, intra-cluster and inter-cluster routing strategies will be adopted. Extensive simulations indicate that CPCR maintains relatively stable clusters and enhances the routing performance. The results demonstrate that clustering-based routing algorithm is rational and promising for large-scale urban DTNs.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -455,7 +451,7 @@ Routing in Public Transport Networks is particularly challenging due to the high
 
 % no keywords
 \begin{IEEEkeywords}
-clustering,  inter-contact time ,contact prediction ,delay tolerant networks
+Delay tolerant networks, clustering, inter-contact time
 \end{IEEEkeywords}
 
 
@@ -480,21 +476,21 @@ Delay Tolerant Networks (DTNs) \cite{aFall-2,cAhmedSalil-4} is a branch of netwo
 where communication links only exist temporarily with a highly dynamic topology. One of such examples is vehicular network, in which, vehicles communicate with each other in order to disseminate data using opportunistic contacts.
 
 In large-scale urban DTNs,routing is one of the most challenge problems. Whereas, the routing performance and the scalability network is restricted by the node scale. An effective way to improve the routing performance and the scalability is clustering based on various shared properties of the nodes. Therefore, the available knowledge can be utilized efficiently. However, the resource cost by maintaining clusters can be significant.
-Moreover, centralized clustering method will fail for the opportunistic connections. 
+Moreover, centralized clustering method will fail for the opportunistic connections.
 
 In this paper, we propose an clustering-based routing scheme for large-scale urban DTNs.  We first
 analyze a real-world urban vehicular tracing data set to reveal the Inter-contact time distributions of mobile vehicles in a large city. Our study confirm that both the global ICT and the individual ICT between each nodal pair follow the exponential distributions.
 It is demonstrated that the distribution for ICT of nodal pairs is more accuracy than the global ICT distribution. Hence, a clustering algorithm which groups nodes by the contact probability calculated from the ICT distribution for nodal pair in real-time, and propose a new clustering-based routing scheme based on this contact predication clustering.
 
 To summarize, our contributions can be highlighted as follows:
-    \begin{itemize}
+    \begin{enumerate}
       \item
          Via an in-depth analysis of the Beijing taxi data set, we demonstrate that it is applicable to estimate the parameter for the ICT exponential distribution of every nodal pair. Such pair-wise ICT distribution is more accurate then the global ICT distribution, which is commonly used in several DTN routing schemes.
       \item
          A hierarchical routing algorithm, CPCR, based on a distributed clustering via contact prediction is proposed.  CPCR uses direct delivery and flooding strategy in intra-cluster and inter-cluster routing phases, respectively.
       \item %%evaluation
         Extensive simulations are conducted with the Beijing taxi tracing data to evaluate the efficiency and scalability of the proposed clustering-based routing.
-    \end{itemize}
+    \end{enumerate}
 
 The rest of paper is organized as follows: Section \ref{Section2_relatedwork} provides an overview of related work on DTN routing.
 Section \ref{Section3_characteristics} provides the theoretical basis of contact predicting and clustering via detailed analysis of the Beijing taxi traces. Section \ref{Section4_algorithm} presents our clustering-based routing algorithm which leverages the estimated ICT distributions to clustering nodes into groups and routes the packages accordingly. Simulation results over the Beijing taxi traces are presented in Section \ref{Section6_simulation}. Finally, Section \ref{Section6_conclusions} concludes this paper.

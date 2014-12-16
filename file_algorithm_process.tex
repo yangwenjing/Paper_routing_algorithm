@@ -46,7 +46,7 @@ Since the packets are delivered only when there exists connections between nodes
 \STATE $updateCRs();$\\
 \IF{$this.Cluster!=remoteNode.Cluster$}
 \STATE $joinOrNotRemoteCluster();$\\
-\ENDIF 
+\ENDIF
 \STATE $updateGRs();$\\
 \STATE $msgs = getValidMsgs();$\\
 \STATE $delivery(msgs);$\\
@@ -89,11 +89,11 @@ In this case, the minim contact prob in $C1$ is 0.3, whereas, the mimim contact 
 
 \textbf{Update GRs:} Gateway is a host in the same cluster, where it performs higher probability to another cluster. From the $\{CR\}$ of node1, we can only figure out the probability of node1 to a node of another cluster $C1$(node3), so a $GR=<C2,1,0.55>$ will be assigned to identify which node has the max prob to cluster $C2$. If $node1$ belongs to the same cluster of the remote node, the two $GR$ will be merged. If two GRs conflict with each other, the one with latest $T_established$ will be selected.
 
-\textbf{Get valid messages:} this process is an important step to implement the routing strategies. A node can carry many messages. When contacting with another node, routing strategies are implemented by deciding which message need to be delivered. Messages satisfied following rules will be delivered.
-\begin{itemize}
+\textbf{Get valid messages:} this process is an important step to implement the routing strategies. A node can carry many messages. When contacting with another node, routing strategies are implemented by deciding which messages need to be delivered. Messages satisfied following rules will be delivered.
+\begin{enumerate}
   \item The remote node is the destination node of the message.
   \item The remote node belongs to the same cluster of the destination node (searching the $\{CR\}$ to find out the cluster of destination node if $\exists CR=<destination,C_j,...>\in\{CR\}$).
   \item The remote node belongs to a cluster which carries no copy of the message (searching the $\{Mlog\}$).
-\end{itemize}
+\end{enumerate}
 
 \textbf{update MLogs and Msgs:} If a message is delivered to the remote node, the mlog will be updated in case of sending the same message to another cluster twice or more. If the remote node is the destination, the status will be set $Success$. Message out of ttl or send to destination successfully will be dropped.
